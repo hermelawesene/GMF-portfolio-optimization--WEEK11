@@ -30,7 +30,7 @@ def clean_data(df):
             print('No missing values remain after fill operations.')
 
         # Set 'Date' as the index name if applicable
-        df.index.name = 'Date'
+        #df.index.name = 'Date'
     else:
         print('Warning: DataFrame is empty.')
 
@@ -45,4 +45,24 @@ def closing_price(df, title):
     plt.ylabel('Close Price ($)')
     plt.title(f'{title} Closing Price Over Time')
     plt.legend()
+    plt.show()
+
+def rolling_volatility(df, title):
+    # Ensure 'Date' is in datetime format if not already
+    df['Date'] = pd.to_datetime(df['Date'])
+
+    # Calculate the daily percentage change (if not already calculated)
+    df['Daily Return'] = df['Adj Close'].pct_change()
+
+    # Calculate rolling volatility over a 21-day window (approximately 1 month)
+    df['Volatility'] = df['Daily Return'].rolling(window=21).std() * (252 ** 0.5)  # Annualized volatility
+
+    # Plot rolling volatility with Date as x-axis
+    plt.figure(figsize=(10, 6))
+    plt.plot(df['Date'], df['Volatility'], label=f'{title} Rolling Volatility', color='red', alpha=0.6)
+    plt.title(f'Rolling Volatility (21-day) - {title}')
+    plt.xlabel('Date')
+    plt.ylabel('Volatility')
+    plt.legend()
+    plt.grid(True)
     plt.show()
