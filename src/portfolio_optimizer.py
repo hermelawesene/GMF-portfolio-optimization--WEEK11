@@ -6,7 +6,7 @@ import seaborn as sns
 import logging
 
 class PortfolioOptimizer:
-    def __init__(self, tsla_csv, bnd_csv, spy_csv, logger=None, column='Forecast'):
+    def __init__(self, tsla_csv, logger=None, column='Forecast'):
         """
         Initialize the PortfolioOptimizer class with paths to CSV files for forecast data.
 
@@ -18,8 +18,6 @@ class PortfolioOptimizer:
         - column: Column name containing forecast prices
         """
         self.tsla_csv = tsla_csv
-        self.bnd_csv = bnd_csv
-        self.spy_csv = spy_csv
         self.column = column
         self.logger = logger
         self.df = self._load_data()
@@ -33,9 +31,7 @@ class PortfolioOptimizer:
         try:
             self.logger.info("Loading forecast data for TSLA, BND, and SPY...")
             tsla_data = pd.read_csv(self.tsla_csv, index_col=0, parse_dates=True)[self.column]
-            bnd_data = pd.read_csv(self.bnd_csv, index_col=0, parse_dates=True)[self.column]
-            spy_data = pd.read_csv(self.spy_csv, index_col=0, parse_dates=True)[self.column]
-            df = pd.DataFrame({'TSLA': tsla_data, 'BND': bnd_data, 'SPY': spy_data}).dropna()
+            df = pd.DataFrame({'TSLA': tsla_data,}).dropna()
             self.logger.info("Data loaded and combined successfully.")
         except Exception as e:
             self.logger.error("Error loading data: %s", e)
